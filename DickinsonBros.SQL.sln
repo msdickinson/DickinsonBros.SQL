@@ -9,7 +9,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1 Library", "1 Library", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "9 Misc", "9 Misc", "{34419A67-256E-4790-A627-138ABD15AAD3}"
 	ProjectSection(SolutionItems) = preProject
-		Scripts\CreateNugetPackage.ps1 = Scripts\CreateNugetPackage.ps1
 		Scripts\CreateNugetPackageCI.ps1 = Scripts\CreateNugetPackageCI.ps1
 	EndProjectSection
 EndProject

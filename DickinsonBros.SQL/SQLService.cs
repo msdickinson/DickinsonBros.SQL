@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using DickinsonBros.Logger.Abstractions;
+using DickinsonBros.SQL.Abstractions;
 using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
