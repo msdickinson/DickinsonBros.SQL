@@ -10,6 +10,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "9 Misc", "9 Misc", "{34419A67-256E-4790-A627-138ABD15AAD3}"
 	ProjectSection(SolutionItems) = preProject
 		Scripts\CreateNugetPackageCI.ps1 = Scripts\CreateNugetPackageCI.ps1
+		DickinsonBros.SQL.runsettings = DickinsonBros.SQL.runsettings
+		Scripts\Publish.yml = Scripts\Publish.yml
+		Scripts\Test.yml = Scripts\Test.yml
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DickinsonBros.SQL.Tests", "DickinsonBros.SQL.Tests\DickinsonBros.SQL.Tests.csproj", "{B86FD0E6-8E15-4B03-8409-972BDDD36028}"
