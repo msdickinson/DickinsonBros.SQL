@@ -1,4 +1,5 @@
-﻿using DickinsonBros.SQL.Abstractions;
+﻿using Dapper;
+using DickinsonBros.SQL.Abstractions;
 using DickinsonBros.SQL.Runner.Services.AccountDB.Models;
 using Microsoft.Extensions.Options;
 using System;
@@ -15,7 +16,7 @@ namespace DickinsonBros.SQL.Runner.Services.AccountDB
         internal readonly string _connectionString;
         internal readonly ISQLService _sqlService;
 
-        internal const string QUEUE_TABLE_NAME = "[TestRunner].[Queue]";
+        internal const string QUEUE_TABLE_NAME = "[DickinsonBros.SQL.Runner.Database].[TestRunner].[Queue]";
 
         internal const string SELECT_TOP_1_BY_QUEUEID_DESC = 
  @"SELECT TOP (1) 
@@ -34,7 +35,7 @@ order by QueueId DESC;";
 
         internal const string UPDATE_QUEUE_DATA_BY_QUEUEID_DESC =
 @"UPDATE [DickinsonBros.SQL.Runner.Database].[TestRunner].[Queue]
-        SET[Payload] = '{""X"": ""Updated""}'
+        SET [Payload] = @Payload
  WHERE QueueId = @QueueId";
 
         internal const string DELETE_ALL_QUEUE_ITEMS =
@@ -47,10 +48,7 @@ order by QueueId DESC;";
         (@Payload);";
 
         internal const string INSERT_QUEUE_ITEMS =
-@"INSERT INTO [DickinsonBros.SQL.Runner.Database].[TestRunner].[Queue]
- select 
-     [Payload]
- from @param";
+@"[DickinsonBros.SQL.Runner.Database].[TestRunner].InsertQueueItems ";
 
         internal const string SELECT_TOP_1_BY_QUEUEID_DESC_WITH_STORED_PROC = "[TestRunner].[SelectTopOneQueue]";
 
@@ -63,7 +61,6 @@ order by QueueId DESC;";
             _connectionString = dickinsonBrosSQLRunnerDB.Value.ConnectionString;
             _sqlService = sqlService;
         }
-
 
         public async Task<QueueDTO> QueryQueueFirstOrDefaultAsync()
         {
@@ -137,21 +134,19 @@ order by QueueId DESC;";
         {
             var dataTable = new DataTable();
 
-            dataTable.Columns.Add(new DataColumn("QueueId", typeof(string)));
             dataTable.Columns.Add(new DataColumn("Payload", typeof(string)));
-
-            queueItems.ForEach(e => dataTable.Rows.Add(e.QueueId, e.Payload));
-
-            var insertQueueDTOS = new InsertQueueDTOS();
-            insertQueueDTOS.queueItems = dataTable;
+            queueItems.ForEach(e => dataTable.Rows.Add(e.Payload));
 
             await _sqlService
                   .ExecuteAsync
                   (
                       _connectionString,
                       INSERT_QUEUE_ITEMS,
-                      dataTable,
-                      commandType: CommandType.Text
+                      new
+                      {
+                          @QueueItems = dataTable.AsTableValuedParameter()
+                      },
+                      commandType: CommandType.StoredProcedure
                   ).ConfigureAwait(false);
         }
 
@@ -159,10 +154,9 @@ order by QueueId DESC;";
         {
             var dataTable = new DataTable();
 
-            dataTable.Columns.Add(new DataColumn("QueueId", typeof(string)));
             dataTable.Columns.Add(new DataColumn("Payload", typeof(string)));
 
-            queueItems.ForEach(e => dataTable.Rows.Add(e.QueueId, e.Payload));
+            queueItems.ForEach(e => dataTable.Rows.Add(e.Payload));
 
             await _sqlService
                   .BulkCopyAsync<QueueDTO>

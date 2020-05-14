@@ -43,10 +43,6 @@ namespace DickinsonBros.SQL.Runner
                     {
                         Payload = @"{""X"": ""1""}"
                     };
-                    var updatedQueueItem = new QueueDTO
-                    {
-                        Payload = @"{""X"": ""2""}"
-                    };
                     var queueItems = new List<QueueDTO>
                     {
                         queueItem,
@@ -56,11 +52,10 @@ namespace DickinsonBros.SQL.Runner
                         queueItem
                     };
 
-                    //ExecuteAsync
+                    //ExecuteAsync (Delete, Insert Item, Insert Items)
                     await dickinsonBrosSQLRunnerDBService.DeleteAllQueueItemsAsync().ConfigureAwait(false);
                     await dickinsonBrosSQLRunnerDBService.InsertQueueItemAsync(queueItem).ConfigureAwait(false);
                     await dickinsonBrosSQLRunnerDBService.InsertQueueItemsAsync(queueItems).ConfigureAwait(false);
-                    await dickinsonBrosSQLRunnerDBService.UpdateQueueItemAsync(updatedQueueItem).ConfigureAwait(false);
 
                     //BulkCopyAsync
                     await dickinsonBrosSQLRunnerDBService.BulkInsertQueueItemsAsync(queueItems).ConfigureAwait(false);
@@ -74,6 +69,9 @@ namespace DickinsonBros.SQL.Runner
                     //QueryAsync
                     var queueItemsObserved = await dickinsonBrosSQLRunnerDBService.SelectLast50QueueItemsProc().ConfigureAwait(false);
 
+                    //ExecuteAsync (Update)
+                    queueItemObserved.Payload = @"{""X"": ""2""}";
+                    await dickinsonBrosSQLRunnerDBService.UpdateQueueItemAsync(queueItemObserved).ConfigureAwait(false);
                 }
             }
             catch (Exception e)

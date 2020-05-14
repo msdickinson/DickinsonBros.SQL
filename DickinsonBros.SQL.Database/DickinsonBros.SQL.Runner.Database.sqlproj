@@ -60,10 +60,13 @@
     <Folder Include="StoredProcedures" />
     <Folder Include="SeedData" />
     <Folder Include="Scehma" />
+    <Folder Include="Type" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Tables\Queue.sql" />
     <Build Include="StoredProcedures\SelectTopOneQueue.sql" />
     <Build Include="Scehma\TestRunner.sql" />
+    <Build Include="StoredProcedures\InsertQueueItems.sql" />
+    <Build Include="Type\TestRunner.sql" />
   </ItemGroup>
 </Project>
