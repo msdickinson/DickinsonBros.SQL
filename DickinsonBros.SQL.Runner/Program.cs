@@ -10,7 +10,6 @@ using DickinsonBros.SQL.Abstractions;
 using DickinsonBros.SQL.Runner.Services.AccountDB;
 using DickinsonBros.SQL.Runner.Services.AccountDB.Models;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Hosting.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -33,45 +32,50 @@ namespace DickinsonBros.SQL.Runner
         {
             try
             {
-                var services = InitializeDependencyInjection();
-                ConfigureServices(services);
-                using (var provider = services.BuildServiceProvider())
+                using (var applicationLifetime = new Services.ApplicationLifetime())
                 {
-                    var dickinsonBrosSQLRunnerDBService = provider.GetRequiredService<IDickinsonBrosSQLRunnerDBService>();
-
-                    var queueItem = new QueueDTO
+                    var services = InitializeDependencyInjection();
+                    ConfigureServices(services, applicationLifetime);
+                    using (var provider = services.BuildServiceProvider())
                     {
-                        Payload = @"{""X"": ""1""}"
-                    };
-                    var queueItems = new List<QueueDTO>
-                    {
-                        queueItem,
-                        queueItem,
-                        queueItem,
-                        queueItem,
-                        queueItem
-                    };
+                        var dickinsonBrosSQLRunnerDBService = provider.GetRequiredService<IDickinsonBrosSQLRunnerDBService>();
 
-                    //ExecuteAsync (Delete, Insert Item, Insert Items)
-                    await dickinsonBrosSQLRunnerDBService.DeleteAllQueueItemsAsync().ConfigureAwait(false);
-                    await dickinsonBrosSQLRunnerDBService.InsertQueueItemAsync(queueItem).ConfigureAwait(false);
-                    await dickinsonBrosSQLRunnerDBService.InsertQueueItemsAsync(queueItems).ConfigureAwait(false);
+                        var queueItem = new QueueDTO
+                        {
+                            Payload = @"{""X"": ""1""}"
+                        };
+                        var queueItems = new List<QueueDTO>
+                        {
+                            queueItem,
+                            queueItem,
+                            queueItem,
+                            queueItem,
+                            queueItem
+                        };
 
-                    //BulkCopyAsync
-                    await dickinsonBrosSQLRunnerDBService.BulkInsertQueueItemsAsync(queueItems).ConfigureAwait(false);
+                        //ExecuteAsync (Delete, Insert Item, Insert Items)
+                        await dickinsonBrosSQLRunnerDBService.DeleteAllQueueItemsAsync().ConfigureAwait(false);
+                        await dickinsonBrosSQLRunnerDBService.InsertQueueItemAsync(queueItem).ConfigureAwait(false);
+                        await dickinsonBrosSQLRunnerDBService.InsertQueueItemsAsync(queueItems).ConfigureAwait(false);
 
-                    //QueryFirstAsync
-                    var queueItemObserved = await dickinsonBrosSQLRunnerDBService.QueryQueueFirstAsync().ConfigureAwait(false);
+                        //BulkCopyAsync
+                        await dickinsonBrosSQLRunnerDBService.BulkInsertQueueItemsAsync(queueItems).ConfigureAwait(false);
 
-                    //QueryFirstOrDefaultAsync
-                    var queueItemOrDefaultObserved = await dickinsonBrosSQLRunnerDBService.QueryQueueFirstOrDefaultAsync().ConfigureAwait(false);
+                        //QueryFirstAsync
+                        var queueItemObserved = await dickinsonBrosSQLRunnerDBService.QueryQueueFirstAsync().ConfigureAwait(false);
 
-                    //QueryAsync
-                    var queueItemsObserved = await dickinsonBrosSQLRunnerDBService.SelectLast50QueueItemsProc().ConfigureAwait(false);
+                        //QueryFirstOrDefaultAsync
+                        var queueItemOrDefaultObserved = await dickinsonBrosSQLRunnerDBService.QueryQueueFirstOrDefaultAsync().ConfigureAwait(false);
 
-                    //ExecuteAsync (Update)
-                    queueItemObserved.Payload = @"{""X"": ""2""}";
-                    await dickinsonBrosSQLRunnerDBService.UpdateQueueItemAsync(queueItemObserved).ConfigureAwait(false);
+                        //QueryAsync
+                        var queueItemsObserved = await dickinsonBrosSQLRunnerDBService.SelectLast50QueueItemsProc().ConfigureAwait(false);
+
+                        //ExecuteAsync (Update)
+                        queueItemObserved.Payload = @"{""X"": ""2""}";
+                        await dickinsonBrosSQLRunnerDBService.UpdateQueueItemAsync(queueItemObserved).ConfigureAwait(false);
+
+                        applicationLifetime.StopApplication();
+                    }
                 }
             }
             catch (Exception e)
@@ -86,12 +90,12 @@ namespace DickinsonBros.SQL.Runner
 
         }
 
-        private void ConfigureServices(IServiceCollection services)
+        private void ConfigureServices(IServiceCollection services, Services.ApplicationLifetime applicationLifetime)
         {
             services.AddOptions();
             services.AddScoped<ICorrelationService, CorrelationService>();
             services.AddLogging(cfg => cfg.AddConsole());
-            services.AddSingleton<IApplicationLifetime, ApplicationLifetime>();
+            services.AddSingleton<IApplicationLifetime>(applicationLifetime);
             services.AddScoped(typeof(ILoggingService<>), typeof(LoggingService<>));
             services.AddSingleton<IRedactorService, RedactorService>();
             services.AddSingleton<ISQLService, SQLService>();
