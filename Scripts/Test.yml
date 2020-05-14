@@ -20,16 +20,11 @@ steps:
   inputs:
     packageType: 'sdk'
     version: '3.1.101'
-- task: NuGetCommand@2
+- task: DotNetCoreCLI@2
   inputs:
-    command: 'restore'
-    restoreSolution: '**/*.sln'
-    feedsToUse: 'select'
-    vstsFeed: '99529d92-bbfb-4792-8e59-537eb03ee040'
-- task: MSBuild@1
-  inputs:
-    solution: '**/*.sln' 
-    configuration: $(buildConfiguration)
+    command: 'build'
+    projects: '**/*.csproj'
+    configuration: '$(buildConfiguration)'
 - task: VSTest@2
   inputs:
     testSelector: 'testAssemblies'
