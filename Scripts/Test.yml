@@ -16,7 +16,7 @@ variables:
   buildConfiguration: 'Debug'
 
 steps:
-- task: UseDotNet@2
+- task: VSBuild@1
   inputs:
     packageType: 'sdk'
     version: '3.1.101'
