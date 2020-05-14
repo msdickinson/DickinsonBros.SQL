@@ -8,3 +8,5 @@ SQL abstraction that adds increased logging on exceptions
 Features
 * Improved Logs
 * Allows for improved testability
+
+<a href="https://dev.azure.com/marksamdickinson/DickinsonBros/_build?definitionScope=%5CDickinsonBros.SQL">Builds</a>
