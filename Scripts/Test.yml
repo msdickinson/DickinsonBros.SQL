@@ -16,12 +16,12 @@ variables:
   buildConfiguration: 'Debug'
 
 steps:
-- task: VSBuild@1
+- task: UseDotNet@2
   inputs:
     packageType: 'sdk'
     version: '3.1.101'
-- script: dotnet build --configuration $(buildConfiguration)
-  displayName: 'dotnet build $(buildConfiguration)'
+- script: MSBuild.exe DickinsonBros.SQL.sln -p:Configuration=$(buildConfiguration)
+  displayName: 'MSBuild.exe DickinsonBros.SQL.sln -p:Configuration=$(buildConfiguration)'
 - task: VSTest@2
   inputs:
     testSelector: 'testAssemblies'
