@@ -96,7 +96,6 @@ namespace DickinsonBros.SQL.Runner
             services.AddScoped<ICorrelationService, CorrelationService>();
             services.AddLogging(cfg => cfg.AddConsole());
             services.AddSingleton<IApplicationLifetime>(applicationLifetime);
-            services.AddScoped(typeof(ILoggingService<>), typeof(LoggingService<>));
             services.AddSingleton<IRedactorService, RedactorService>();
             services.AddSingleton<ISQLService, SQLService>();
             services.AddSingleton<IEncryptionService, EncryptionService>();
