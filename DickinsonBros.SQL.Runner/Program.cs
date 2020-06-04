@@ -6,7 +6,7 @@ using DickinsonBros.Logger.Abstractions;
 using DickinsonBros.Logger.Extensions;
 using DickinsonBros.Redactor.Extensions;
 using DickinsonBros.Redactor.Models;
-using DickinsonBros.SQL.Abstractions;
+using DickinsonBros.SQL.Extensions;
 using DickinsonBros.SQL.Runner.Models;
 using DickinsonBros.SQL.Runner.Services;
 using DickinsonBros.SQL.Runner.Services.AccountDB;
@@ -126,7 +126,7 @@ namespace DickinsonBros.SQL.Runner
             services.AddSingleton<IConfigureOptions<TelemetryServiceOptions>, TelemetryServiceOptionsConfigurator>();
 
             //Add SQLService
-            services.AddSingleton<ISQLService, SQLService>();
+            services.AddSQLService();
 
             //Add Runner SQL Database Service
             services.AddSingleton<IDickinsonBrosSQLRunnerDBService, DickinsonBrosSQLRunnerDBService>();

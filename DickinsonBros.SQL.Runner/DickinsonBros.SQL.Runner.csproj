@@ -13,7 +13,7 @@
     <PackageReference Include="DickinsonBros.Logger" Version="1.1.0" />
     <PackageReference Include="DickinsonBros.Redactor" Version="2.0.0" />
     <PackageReference Include="DickinsonBros.Redactor.Abstractions" Version="1.0.0" />
-    <PackageReference Include="DickinsonBros.Stopwatch" Version="1.1.0" />
+    <PackageReference Include="DickinsonBros.Stopwatch" Version="2.0.0" />
     <PackageReference Include="DickinsonBros.Telemetry" Version="2.0.0" />
     <PackageReference Include="DickinsonBros.Telemetry.Abstractions" Version="3.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.2.7" />

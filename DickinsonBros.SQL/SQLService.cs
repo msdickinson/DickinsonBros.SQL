@@ -75,7 +75,7 @@ namespace DickinsonBros.SQL
                         {
                             { nameof(sql), sql },
                             { nameof(param), param },
-                            { nameof(commandType), commandType },
+                            { nameof(commandType), Enum.GetName(typeof(CommandType), commandType) },
                             { nameof(stopwatchService.ElapsedMilliseconds), telemetry.ElapsedMilliseconds }
                         }
                     );
@@ -95,7 +95,7 @@ namespace DickinsonBros.SQL
                     {
                         { nameof(sql), sql },
                         { nameof(param), param },
-                        { nameof(commandType), commandType },
+                        { nameof(commandType), Enum.GetName(typeof(CommandType), commandType) },
                         { nameof(stopwatchService.ElapsedMilliseconds), telemetry.ElapsedMilliseconds }
                     }
                 );
@@ -143,7 +143,7 @@ namespace DickinsonBros.SQL
                         {
                             { nameof(sql), sql },
                             { nameof(param), param },
-                            { nameof(commandType), commandType },
+                            { nameof(commandType), Enum.GetName(typeof(CommandType), commandType) },
                             { nameof(stopwatchService.ElapsedMilliseconds), telemetry.ElapsedMilliseconds }
                         }
                     );
@@ -164,7 +164,7 @@ namespace DickinsonBros.SQL
                     {
                         { nameof(sql), sql },
                         { nameof(param), param },
-                        { nameof(commandType), commandType },
+                        { nameof(commandType), Enum.GetName(typeof(CommandType), commandType) },
                         { nameof(stopwatchService.ElapsedMilliseconds), telemetry.ElapsedMilliseconds }
                     }
                 );
@@ -210,7 +210,7 @@ namespace DickinsonBros.SQL
                         {
                             { nameof(sql), sql },
                             { nameof(param), param },
-                            { nameof(commandType), commandType },
+                            { nameof(commandType), Enum.GetName(typeof(CommandType), commandType) },
                             { nameof(stopwatchService.ElapsedMilliseconds), telemetry.ElapsedMilliseconds }
                         }
                     );
@@ -231,7 +231,7 @@ namespace DickinsonBros.SQL
                     {
                         { nameof(sql), sql },
                         { nameof(param), param },
-                        { nameof(commandType), commandType },
+                        { nameof(commandType), Enum.GetName(typeof(CommandType), commandType) },
                         { nameof(stopwatchService.ElapsedMilliseconds), telemetry.ElapsedMilliseconds }
                     }
                 );
@@ -277,7 +277,7 @@ namespace DickinsonBros.SQL
                         {
                             { nameof(sql), sql },
                             { nameof(param), param },
-                            { nameof(commandType), commandType },
+                            { nameof(commandType), Enum.GetName(typeof(CommandType), commandType) },
                             { nameof(stopwatchService.ElapsedMilliseconds), telemetry.ElapsedMilliseconds }
                         }
                     );
@@ -298,7 +298,7 @@ namespace DickinsonBros.SQL
                     {
                         { nameof(sql), sql },
                         { nameof(param), param },
-                        { nameof(commandType), commandType },
+                        { nameof(commandType), Enum.GetName(typeof(CommandType), commandType) },
                         { nameof(stopwatchService.ElapsedMilliseconds), telemetry.ElapsedMilliseconds }
                     }
                 );
