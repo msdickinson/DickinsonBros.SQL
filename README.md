@@ -58,8 +58,8 @@ await dickinsonBrosSQLRunnerDBService.UpdateQueueItemAsync(queueItemObserved).Co
           SQLService.ExecuteAsync
           sql: DELETE FROM [DickinsonBros.SQL.Runner.Database].[TestRunner].[Queue];
           param:
-          commandType: 1
-          ElapsedMilliseconds: 996
+          commandType: Text
+          ElapsedMilliseconds: 1021
 
     info: DickinsonBros.SQL.SQLService[1]
           SQLService.ExecuteAsync
@@ -71,8 +71,8 @@ await dickinsonBrosSQLRunnerDBService.UpdateQueueItemAsync(queueItemObserved).Co
             "QueueId": 0,
             "Payload": "{\r\n  \"X\": \"1\"\r\n}"
           }
-          commandType: 1
-          ElapsedMilliseconds: 1056
+          commandType: Text
+          ElapsedMilliseconds: 63
 
     info: DickinsonBros.SQL.SQLService[1]
           SQLService.ExecuteAsync
@@ -80,13 +80,13 @@ await dickinsonBrosSQLRunnerDBService.UpdateQueueItemAsync(queueItemObserved).Co
           param: {
             "QueueItems": {}
           }
-          commandType: 4
-          ElapsedMilliseconds: 1089
+          commandType: StoredProcedure
+          ElapsedMilliseconds: 35
 
     info: DickinsonBros.SQL.SQLService[1]
           SQLService.QueryFirstOrDefaultAsync
           tableName: [DickinsonBros.SQL.Runner.Database].[TestRunner].[Queue]
-          ElapsedMilliseconds: 1089
+          ElapsedMilliseconds: 0
           Rows: 5
 
     info: DickinsonBros.SQL.SQLService[1]
@@ -97,8 +97,8 @@ await dickinsonBrosSQLRunnerDBService.UpdateQueueItemAsync(queueItemObserved).Co
           FROM [DickinsonBros.SQL.Runner.Database].[TestRunner].[Queue]
           order by QueueId DESC;
           param:
-          commandType: 1
-          ElapsedMilliseconds: 1089
+          commandType: Text
+          ElapsedMilliseconds: 0
 
     info: DickinsonBros.SQL.SQLService[1]
           SQLService.QueryFirstOrDefaultAsync
@@ -108,8 +108,8 @@ await dickinsonBrosSQLRunnerDBService.UpdateQueueItemAsync(queueItemObserved).Co
           FROM [DickinsonBros.SQL.Runner.Database].[TestRunner].[Queue]
           order by QueueId DESC;
           param:
-          commandType: 1
-          ElapsedMilliseconds: 1090
+          commandType: Text
+          ElapsedMilliseconds: 1
 
     info: DickinsonBros.SQL.SQLService[1]
           SQLService.QueryFirstOrDefaultAsync
@@ -119,8 +119,8 @@ await dickinsonBrosSQLRunnerDBService.UpdateQueueItemAsync(queueItemObserved).Co
           FROM [DickinsonBros.SQL.Runner.Database].[TestRunner].[Queue]
           order by QueueId DESC;
           param:
-          commandType: 1
-          ElapsedMilliseconds: 1090
+          commandType: Text
+          ElapsedMilliseconds: 0
 
     info: DickinsonBros.SQL.SQLService[1]
           SQLService.ExecuteAsync
@@ -128,18 +128,18 @@ await dickinsonBrosSQLRunnerDBService.UpdateQueueItemAsync(queueItemObserved).Co
                   SET [Payload] = @Payload
            WHERE QueueId = @QueueId
           param: {
-            "QueueId": 1078,
+            "QueueId": 1166,
             "Payload": "{\r\n  \"X\": \"2\"\r\n}"
           }
-          commandType: 1
-          ElapsedMilliseconds: 1093
-
+          commandType: Text
+          ElapsedMilliseconds: 2
+      
 Note: Logs can be redacted via configuration (see https://github.com/msdickinson/DickinsonBros.Redactor)
 
 Telemetry generated when using DickinsonBros.Telemetry and connecting it to a configured database for ITelemetry 
 See https://github.com/msdickinson/DickinsonBros.Telemetry on how to configure DickinsonBros.Telemetry and setup the database.
 
-![Alt text](https://raw.githubusercontent.com/msdickinson/DickinsonBros.SQL/develop/TelemetrySQLExample.PNG)
+![Alt text](https://raw.githubusercontent.com/msdickinson/DickinsonBros.SQL/develop/TelemetrySQLSample.PNG)
 
 
 <h2>Setup</h2>
