@@ -9,7 +9,7 @@
     <RepositoryUrl>https://github.com/msdickinson/DickinsonBros.SQL.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <Description>
-      SQL abstraction
+      SQL Service
 
       Features
       * Methods: Execute, QueryFirst, QueryFirstOrDefault, Query, and BulkCopy
