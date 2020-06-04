@@ -3,23 +3,32 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <Configurations>Debug;Release</Configurations>
-    <Version>1.0.0</Version>
+    <Version>2.0.0</Version>
     <Authors>Mark Dickinson</Authors>
     <Company>DickinsonBros</Company>
     <RepositoryUrl>https://github.com/msdickinson/DickinsonBros.SQL.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <Description>
-      SQL abstraction that adds increased logging on exceptions
+      SQL abstraction
+
+      Features
+      * Methods: Execute, QueryFirst, QueryFirstOrDefault, Query, and BulkCopy
+      * Logs for all successful and exceptional runs
+      * Telemetry for all calls
     </Description>
   </PropertyGroup>
 
 
   <ItemGroup>
     <PackageReference Include="Dapper" Version="2.0.35" />
+    <PackageReference Include="DickinsonBros.DateTime.Abstractions" Version="1.0.0" />
     <PackageReference Include="DickinsonBros.Logger.Abstractions" Version="1.0.0" />
+    <PackageReference Include="DickinsonBros.Redactor.Abstractions" Version="1.0.0" />
     <PackageReference Include="DickinsonBros.SQL.Abstractions" Version="1.2.0" />
-    <PackageReference Include="Microsoft.Data.SqlClient" Version="1.1.2" />
-    <PackageReference Include="Microsoft.Extensions.Options" Version="3.1.3" />
+    <PackageReference Include="DickinsonBros.Stopwatch.Abstractions" Version="1.0.0" />
+    <PackageReference Include="DickinsonBros.Telemetry.Abstractions" Version="3.0.0" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="1.1.3" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="3.1.4" />
   </ItemGroup>
 
 

@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DickinsonBros.SQL.Runner.Services.AccountDB
+namespace DickinsonBros.SQL.Runner.Models
 {
-    public class RunnerDBOptions
+    public class DickinsonBrosDBOptions
     {
         public string ConnectionString { get; set; }
     }

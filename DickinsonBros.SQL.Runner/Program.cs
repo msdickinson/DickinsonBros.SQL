@@ -1,14 +1,19 @@
-﻿using DickinsonBros.Encryption;
-using DickinsonBros.Encryption.Abstractions;
-using DickinsonBros.Encryption.Models;
+﻿using DickinsonBros.DateTime.Extensions;
+using DickinsonBros.Encryption.Certificate.Extensions;
+using DickinsonBros.Encryption.Certificate.Models;
 using DickinsonBros.Logger;
 using DickinsonBros.Logger.Abstractions;
-using DickinsonBros.Redactor;
-using DickinsonBros.Redactor.Abstractions;
+using DickinsonBros.Logger.Extensions;
+using DickinsonBros.Redactor.Extensions;
 using DickinsonBros.Redactor.Models;
 using DickinsonBros.SQL.Abstractions;
+using DickinsonBros.SQL.Runner.Models;
+using DickinsonBros.SQL.Runner.Services;
 using DickinsonBros.SQL.Runner.Services.AccountDB;
 using DickinsonBros.SQL.Runner.Services.AccountDB.Models;
+using DickinsonBros.Stopwatch.Extensions;
+using DickinsonBros.Telemetry.Extensions;
+using DickinsonBros.Telemetry.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -95,21 +100,38 @@ namespace DickinsonBros.SQL.Runner
             services.AddOptions();
             services.AddScoped<ICorrelationService, CorrelationService>();
             services.AddLogging(cfg => cfg.AddConsole());
+
+            //Add ApplicationLifetime
             services.AddSingleton<IApplicationLifetime>(applicationLifetime);
-            services.AddSingleton<IRedactorService, RedactorService>();
+
+            //Add DateTime Service
+            services.AddDateTimeService();
+
+            //Add Stopwatch Service
+            services.AddStopwatchService();
+
+            //Add Logging Service
+            services.AddLoggingService();
+
+            //Add Redactor Service
+            services.AddRedactorService();
+            services.Configure<RedactorServiceOptions>(_configuration.GetSection(nameof(RedactorServiceOptions)));
+
+            //Add Certificate Encryption Service
+            services.AddCertificateEncryptionService<CertificateEncryptionServiceOptions>();
+            services.Configure<CertificateEncryptionServiceOptions<RunnerCertificateEncryptionServiceOptions>>(_configuration.GetSection(nameof(RunnerCertificateEncryptionServiceOptions)));
+
+            //Add Telemetry Service
+            services.AddTelemetryService();
+            services.AddSingleton<IConfigureOptions<TelemetryServiceOptions>, TelemetryServiceOptionsConfigurator>();
+
+            //Add SQLService
             services.AddSingleton<ISQLService, SQLService>();
-            services.AddSingleton<IEncryptionService, EncryptionService>();
+
+            //Add Runner SQL Database Service
             services.AddSingleton<IDickinsonBrosSQLRunnerDBService, DickinsonBrosSQLRunnerDBService>();
-
-            services.AddScoped(typeof(ILoggingService<>), typeof(LoggingService<>));
-            services.AddSingleton<IRedactorService, RedactorService>();
-
-            services.Configure<JsonRedactorOptions>(_configuration.GetSection(nameof(JsonRedactorOptions)));
-            services.Configure<EncryptionSettings>(_configuration.GetSection(nameof(EncryptionSettings)));
-            services.AddSingleton<IConfigureOptions<DickinsonBrosSQLRunnerDB>, DickinsonBrosSQLRunnerDBOptionsConfigurator>();
+            services.AddSingleton<IConfigureOptions<DickinsonBrosDBOptions>, DickinsonBrosDBOptionsConfigurator>();
         }
-
-
 
         IServiceCollection InitializeDependencyInjection()
         {
