@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using DickinsonBros.SQL.Abstractions;
+using DickinsonBros.SQL.Runner.Models;
 using DickinsonBros.SQL.Runner.Services.AccountDB.Models;
 using Microsoft.Extensions.Options;
 using System;
@@ -54,11 +55,11 @@ order by QueueId DESC;";
 
         public DickinsonBrosSQLRunnerDBService
         (
-            IOptions<DickinsonBrosSQLRunnerDB> dickinsonBrosSQLRunnerDB,
+            IOptions<DickinsonBrosDBOptions> dickinsonBrosDBOptions,
             ISQLService sqlService
         )
         {
-            _connectionString = dickinsonBrosSQLRunnerDB.Value.ConnectionString;
+            _connectionString = dickinsonBrosDBOptions.Value.ConnectionString;
             _sqlService = sqlService;
         }
 
