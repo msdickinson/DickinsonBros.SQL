@@ -52,6 +52,8 @@ var queueItemsObserved = await dickinsonBrosSQLRunnerDBService.SelectLast50Queue
 //ExecuteAsync (Update)
 queueItemObserved.Payload = @"{""X"": ""2""}";
 await dickinsonBrosSQLRunnerDBService.UpdateQueueItemAsync(queueItemObserved).ConfigureAwait(false);
+
+await telemetryService.FlushAsync().ConfigureAwait(false);
 ```
 
     info: DickinsonBros.SQL.SQLService[1]
@@ -226,6 +228,7 @@ services.AddSQLService();
 //Build Service Provider 
 using (var provider = services.BuildServiceProvider())
 {
+  var telemetryService = provider.GetRequiredService<ITelemetryService>();
   var sqlService = provider.GetRequiredService<ISQLService>();
 }
 ```
