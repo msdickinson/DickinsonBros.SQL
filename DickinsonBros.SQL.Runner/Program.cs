@@ -1,17 +1,16 @@
 ﻿using DickinsonBros.DateTime.Extensions;
 using DickinsonBros.Encryption.Certificate.Extensions;
 using DickinsonBros.Encryption.Certificate.Models;
-using DickinsonBros.Logger;
-using DickinsonBros.Logger.Abstractions;
 using DickinsonBros.Logger.Extensions;
 using DickinsonBros.Redactor.Extensions;
 using DickinsonBros.Redactor.Models;
-using DickinsonBros.SQL.Abstractions;
+using DickinsonBros.SQL.Extensions;
 using DickinsonBros.SQL.Runner.Models;
 using DickinsonBros.SQL.Runner.Services;
 using DickinsonBros.SQL.Runner.Services.AccountDB;
 using DickinsonBros.SQL.Runner.Services.AccountDB.Models;
 using DickinsonBros.Stopwatch.Extensions;
+using DickinsonBros.Telemetry.Abstractions;
 using DickinsonBros.Telemetry.Extensions;
 using DickinsonBros.Telemetry.Models;
 using Microsoft.AspNetCore.Hosting;
@@ -37,19 +36,18 @@ namespace DickinsonBros.SQL.Runner
         {
             try
             {
-                using (var applicationLifetime = new Services.ApplicationLifetime())
-                {
-                    var services = InitializeDependencyInjection();
-                    ConfigureServices(services, applicationLifetime);
-                    using (var provider = services.BuildServiceProvider())
-                    {
-                        var dickinsonBrosSQLRunnerDBService = provider.GetRequiredService<IDickinsonBrosSQLRunnerDBService>();
+                using var applicationLifetime = new Services.ApplicationLifetime();
+                var services = InitializeDependencyInjection();
+                ConfigureServices(services, applicationLifetime);
+                using var provider = services.BuildServiceProvider();
+                var telemetryService = provider.GetRequiredService<ITelemetryService>();
+                var dickinsonBrosSQLRunnerDBService = provider.GetRequiredService<IDickinsonBrosSQLRunnerDBService>();
 
-                        var queueItem = new QueueDTO
-                        {
-                            Payload = @"{""X"": ""1""}"
-                        };
-                        var queueItems = new List<QueueDTO>
+                var queueItem = new QueueDTO
+                {
+                    Payload = @"{""X"": ""1""}"
+                };
+                var queueItems = new List<QueueDTO>
                         {
                             queueItem,
                             queueItem,
@@ -58,30 +56,31 @@ namespace DickinsonBros.SQL.Runner
                             queueItem
                         };
 
-                        //ExecuteAsync (Delete, Insert Item, Insert Items)
-                        await dickinsonBrosSQLRunnerDBService.DeleteAllQueueItemsAsync().ConfigureAwait(false);
-                        await dickinsonBrosSQLRunnerDBService.InsertQueueItemAsync(queueItem).ConfigureAwait(false);
-                        await dickinsonBrosSQLRunnerDBService.InsertQueueItemsAsync(queueItems).ConfigureAwait(false);
+                //ExecuteAsync (Delete, Insert Item, Insert Items)
+                await dickinsonBrosSQLRunnerDBService.DeleteAllQueueItemsAsync().ConfigureAwait(false);
+                await dickinsonBrosSQLRunnerDBService.InsertQueueItemAsync(queueItem).ConfigureAwait(false);
+                await dickinsonBrosSQLRunnerDBService.InsertQueueItemsAsync(queueItems).ConfigureAwait(false);
 
-                        //BulkCopyAsync
-                        await dickinsonBrosSQLRunnerDBService.BulkInsertQueueItemsAsync(queueItems).ConfigureAwait(false);
+                //BulkCopyAsync
+                await dickinsonBrosSQLRunnerDBService.BulkInsertQueueItemsAsync(queueItems).ConfigureAwait(false);
 
-                        //QueryFirstAsync
-                        var queueItemObserved = await dickinsonBrosSQLRunnerDBService.QueryQueueFirstAsync().ConfigureAwait(false);
+                //QueryFirstAsync
+                var queueItemObserved = await dickinsonBrosSQLRunnerDBService.QueryQueueFirstAsync().ConfigureAwait(false);
 
-                        //QueryFirstOrDefaultAsync
-                        var queueItemOrDefaultObserved = await dickinsonBrosSQLRunnerDBService.QueryQueueFirstOrDefaultAsync().ConfigureAwait(false);
+                //QueryFirstOrDefaultAsync
+                var queueItemOrDefaultObserved = await dickinsonBrosSQLRunnerDBService.QueryQueueFirstOrDefaultAsync().ConfigureAwait(false);
 
-                        //QueryAsync
-                        var queueItemsObserved = await dickinsonBrosSQLRunnerDBService.SelectLast50QueueItemsProc().ConfigureAwait(false);
+                //QueryAsync
+                var queueItemsObserved = await dickinsonBrosSQLRunnerDBService.SelectLast50QueueItemsProc().ConfigureAwait(false);
 
-                        //ExecuteAsync (Update)
-                        queueItemObserved.Payload = @"{""X"": ""2""}";
-                        await dickinsonBrosSQLRunnerDBService.UpdateQueueItemAsync(queueItemObserved).ConfigureAwait(false);
+                //ExecuteAsync (Update)
+                queueItemObserved.Payload = @"{""X"": ""2""}";
+                await dickinsonBrosSQLRunnerDBService.UpdateQueueItemAsync(queueItemObserved).ConfigureAwait(false);
 
-                        applicationLifetime.StopApplication();
-                    }
-                }
+                Console.WriteLine("Flush Telemetry");
+                await telemetryService.FlushAsync().ConfigureAwait(false);
+
+                applicationLifetime.StopApplication();
             }
             catch (Exception e)
             {
@@ -98,7 +97,6 @@ namespace DickinsonBros.SQL.Runner
         private void ConfigureServices(IServiceCollection services, Services.ApplicationLifetime applicationLifetime)
         {
             services.AddOptions();
-            services.AddScoped<ICorrelationService, CorrelationService>();
             services.AddLogging(cfg => cfg.AddConsole());
 
             //Add ApplicationLifetime
@@ -126,7 +124,7 @@ namespace DickinsonBros.SQL.Runner
             services.AddSingleton<IConfigureOptions<TelemetryServiceOptions>, TelemetryServiceOptionsConfigurator>();
 
             //Add SQLService
-            services.AddSingleton<ISQLService, SQLService>();
+            services.AddSQLService();
 
             //Add Runner SQL Database Service
             services.AddSingleton<IDickinsonBrosSQLRunnerDBService, DickinsonBrosSQLRunnerDBService>();
