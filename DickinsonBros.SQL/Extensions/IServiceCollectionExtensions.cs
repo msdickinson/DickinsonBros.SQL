@@ -9,7 +9,7 @@ namespace DickinsonBros.SQL.Extensions
         public static IServiceCollection AddSQLService(this IServiceCollection serviceCollection)
         {
             serviceCollection.TryAddSingleton<ISQLService, SQLService>();
-
+            serviceCollection.TryAddSingleton<IConvertService, ConvertService>();
             return serviceCollection;
         }
     }
