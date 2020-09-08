@@ -1,4 +1,5 @@
-﻿using DickinsonBros.DateTime.Extensions;
+﻿using DickinsonBros.DataTable.Extensions;
+using DickinsonBros.DateTime.Extensions;
 using DickinsonBros.Encryption.Certificate.Extensions;
 using DickinsonBros.Encryption.Certificate.Models;
 using DickinsonBros.Logger.Extensions;
@@ -57,12 +58,24 @@ namespace DickinsonBros.SQL.Runner
                         };
 
                 //ExecuteAsync (Delete, Insert Item, Insert Items)
+                await dickinsonBrosSQLRunnerDBService.DeleteAllMixedItemsAsync().ConfigureAwait(false);
                 await dickinsonBrosSQLRunnerDBService.DeleteAllQueueItemsAsync().ConfigureAwait(false);
                 await dickinsonBrosSQLRunnerDBService.InsertQueueItemAsync(queueItem).ConfigureAwait(false);
                 await dickinsonBrosSQLRunnerDBService.InsertQueueItemsAsync(queueItems).ConfigureAwait(false);
 
                 //BulkCopyAsync
                 await dickinsonBrosSQLRunnerDBService.BulkInsertQueueItemsAsync(queueItems).ConfigureAwait(false);
+                await dickinsonBrosSQLRunnerDBService.BulkInsertQueueItemsViaIEnumerableAsync(queueItems).ConfigureAwait(false);
+
+                //Note: This is looking for most common cases, and common edge cases
+                var mixedItems = new List<MixedDTO> 
+                { 
+                    GeneratingMixedDTO(),
+                    GeneratingMixedDTO(),
+                    GeneratingMixedDTO()
+                };
+                
+                await dickinsonBrosSQLRunnerDBService.BulkInsertMixedItemsViaIEnumerableAsync(mixedItems).ConfigureAwait(false);
 
                 //QueryFirstAsync
                 var queueItemObserved = await dickinsonBrosSQLRunnerDBService.QueryQueueFirstAsync().ConfigureAwait(false);
@@ -93,6 +106,28 @@ namespace DickinsonBros.SQL.Runner
             }
 
         }
+
+        private MixedDTO GeneratingMixedDTO()
+        {
+            return new MixedDTO
+            {
+                ByteArray = new byte[3] { 1, 2, 3 },
+                Bool = false,
+                Byte = 4,
+                Char = 'a',
+                DateTime = new System.DateTime(2020, 1, 1),
+                Double = 5.1,
+                Float = 6.1F,
+                Guid = Guid.NewGuid(),
+                Int = 7,
+                NullString = null,
+                NullValueType = null,
+                SampleEnum = SampleEnum.Blue,
+                TimeSpan = new TimeSpan(1, 0, 0),
+                String = "SampleString"
+            };
+        }
+
 
         private void ConfigureServices(IServiceCollection services, Services.ApplicationLifetime applicationLifetime)
         {
@@ -125,6 +160,12 @@ namespace DickinsonBros.SQL.Runner
 
             //Add SQLService
             services.AddSQLService();
+
+            //Add SQLService
+            services.AddDataTableService();
+
+            //Add MemoryCatche
+            services.AddMemoryCache();
 
             //Add Runner SQL Database Service
             services.AddSingleton<IDickinsonBrosSQLRunnerDBService, DickinsonBrosSQLRunnerDBService>();
