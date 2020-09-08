@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using DickinsonBros.DataTable.Abstractions;
 using DickinsonBros.DateTime.Abstractions;
 using DickinsonBros.Logger.Abstractions;
 using DickinsonBros.Redactor.Abstractions;
@@ -27,19 +28,24 @@ namespace DickinsonBros.SQL
         internal readonly ITelemetryService _telemetryService;
         internal readonly IDateTimeService _dateTimeService;
         internal readonly IRedactorService _redactorService;
+        internal readonly IDataTableService _dataTableService;
+
         public SQLService
         (
             IServiceProvider serviceProvider,
             ILoggingService<SQLService> logger,
             IRedactorService redactorService,
             ITelemetryService telemetryService,
-            IDateTimeService dateTimeService)
+            IDateTimeService dateTimeService,
+            IDataTableService dataTableService
+        )
         {
             _serviceProvider = serviceProvider;
             _logger = logger;
             _telemetryService = telemetryService;
             _redactorService = redactorService;
             _dateTimeService = dateTimeService;
+            _dataTableService = dataTableService;
         }
         public async Task ExecuteAsync(string connectionString, string sql, object param = null, CommandType? commandType = null)
         {
@@ -302,9 +308,9 @@ namespace DickinsonBros.SQL
             }
         }
 
-        public async Task BulkCopyAsync<T>(string connectionString, DataTable table, string tableName, int? batchSize, TimeSpan? timeout, CancellationToken? token)
+        public async Task BulkCopyAsync(string connectionString, System.Data.DataTable table, string tableName, int? batchSize, TimeSpan? timeout, CancellationToken? token)
         {
-            var methodIdentifier = $"{nameof(SQLService)}.{nameof(QueryFirstOrDefaultAsync)}";
+            var methodIdentifier = $"{nameof(SQLService)}.{nameof(BulkCopyAsync)}";
             var stopwatchService = _serviceProvider.GetRequiredService<IStopwatchService>();
 
             var telemetry = new TelemetryData
@@ -380,6 +386,11 @@ namespace DickinsonBros.SQL
             }
         }
 
+        public async Task BulkCopyAsync<T>(string connectionString, IEnumerable<T> enumerable, string tableName, int? batchSize, TimeSpan? timeout, CancellationToken? token)
+        {
+            var dataTable = _dataTableService.ToDataTable(enumerable, tableName);
+            await BulkCopyAsync(connectionString, dataTable, tableName, batchSize, timeout, token).ConfigureAwait(false);
+        }
     }
 
 }

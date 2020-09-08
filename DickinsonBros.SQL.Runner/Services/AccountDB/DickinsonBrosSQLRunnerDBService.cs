@@ -19,6 +19,8 @@ namespace DickinsonBros.SQL.Runner.Services.AccountDB
 
         internal const string QUEUE_TABLE_NAME = "[DickinsonBros.SQL.Runner.Database].[TestRunner].[Queue]";
 
+        internal const string MIXED_TABLE_NAME = "[DickinsonBros.SQL.Runner.Database].[TestRunner].[Mixed]";
+
         internal const string SELECT_TOP_1_BY_QUEUEID_DESC = 
  @"SELECT TOP (1) 
     [QueueId],
@@ -41,6 +43,9 @@ order by QueueId DESC;";
 
         internal const string DELETE_ALL_QUEUE_ITEMS =
 @"DELETE FROM [DickinsonBros.SQL.Runner.Database].[TestRunner].[Queue];";
+
+        internal const string DELETE_ALL_MIXED_ITEMS =
+@"DELETE FROM [DickinsonBros.SQL.Runner.Database].[TestRunner].[Mixed];";
 
         internal const string INSERT_QUEUE_ITEM =
 @"INSERT INTO [DickinsonBros.SQL.Runner.Database].[TestRunner].[Queue]
@@ -119,6 +124,17 @@ order by QueueId DESC;";
                   ).ConfigureAwait(false);
         }
 
+        public async Task DeleteAllMixedItemsAsync()
+        {
+            await _sqlService
+                  .ExecuteAsync
+                  (
+                      _connectionString,
+                      DELETE_ALL_MIXED_ITEMS,
+                      commandType: CommandType.Text
+                  ).ConfigureAwait(false);
+        }
+
         public async Task InsertQueueItemAsync(QueueDTO queueItem)
         {
             await _sqlService
@@ -133,7 +149,7 @@ order by QueueId DESC;";
 
         public async Task InsertQueueItemsAsync(List<QueueDTO> queueItems)
         {
-            var dataTable = new DataTable();
+            var dataTable = new System.Data.DataTable();
 
             dataTable.Columns.Add(new DataColumn("Payload", typeof(string)));
             queueItems.ForEach(e => dataTable.Rows.Add(e.Payload));
@@ -153,18 +169,46 @@ order by QueueId DESC;";
 
         public async Task BulkInsertQueueItemsAsync(List<QueueDTO> queueItems)
         {
-            var dataTable = new DataTable();
+            var dataTable = new System.Data.DataTable();
 
             dataTable.Columns.Add(new DataColumn("Payload", typeof(string)));
 
             queueItems.ForEach(e => dataTable.Rows.Add(e.Payload));
 
             await _sqlService
-                  .BulkCopyAsync<QueueDTO>
+                  .BulkCopyAsync
                   (
                       _connectionString,
                       dataTable,
                       QUEUE_TABLE_NAME,
+                      null,
+                      null,
+                      null
+                  ).ConfigureAwait(false);
+        }
+
+        public async Task BulkInsertQueueItemsViaIEnumerableAsync<T>(IEnumerable<T> enumerable)
+        {
+            await _sqlService
+                  .BulkCopyAsync
+                  (
+                      _connectionString,
+                      enumerable,
+                      QUEUE_TABLE_NAME,
+                      null,
+                      null,
+                      null
+                  ).ConfigureAwait(false);
+        }
+
+        public async Task BulkInsertMixedItemsViaIEnumerableAsync<T>(IEnumerable<T> enumerable)
+        {
+            await _sqlService
+                  .BulkCopyAsync
+                  (
+                      _connectionString,
+                      enumerable,
+                      MIXED_TABLE_NAME,
                       null,
                       null,
                       null
@@ -186,6 +230,6 @@ order by QueueId DESC;";
 
     public class InsertQueueDTOS
     {
-        public DataTable queueItems;
+        public System.Data.DataTable queueItems;
     }
 }
