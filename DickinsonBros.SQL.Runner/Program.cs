@@ -1,22 +1,18 @@
 ﻿using DickinsonBros.DataTable.Extensions;
 using DickinsonBros.DateTime.Extensions;
 using DickinsonBros.Encryption.Certificate.Extensions;
-using DickinsonBros.Encryption.Certificate.Models;
 using DickinsonBros.Logger.Extensions;
 using DickinsonBros.Redactor.Extensions;
-using DickinsonBros.Redactor.Models;
 using DickinsonBros.SQL.Extensions;
 using DickinsonBros.SQL.Runner.Models;
 using DickinsonBros.SQL.Runner.Services;
 using DickinsonBros.SQL.Runner.Services.AccountDB;
 using DickinsonBros.SQL.Runner.Services.AccountDB.Models;
 using DickinsonBros.Stopwatch.Extensions;
-using DickinsonBros.Telemetry.Abstractions;
 using DickinsonBros.Telemetry.Extensions;
-using DickinsonBros.Telemetry.Models;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
@@ -37,13 +33,11 @@ namespace DickinsonBros.SQL.Runner
         {
             try
             {
-                using var applicationLifetime = new Services.ApplicationLifetime();
                 var services = InitializeDependencyInjection();
-                ConfigureServices(services, applicationLifetime);
+                ConfigureServices(services);
                 using var provider = services.BuildServiceProvider();
-                var telemetryService = provider.GetRequiredService<ITelemetryService>();
                 var dickinsonBrosSQLRunnerDBService = provider.GetRequiredService<IDickinsonBrosSQLRunnerDBService>();
-
+                var hostApplicationLifetime = provider.GetService<IHostApplicationLifetime>();
                 var queueItem = new QueueDTO
                 {
                     Payload = @"{""X"": ""1""}"
@@ -90,10 +84,8 @@ namespace DickinsonBros.SQL.Runner
                 queueItemObserved.Payload = @"{""X"": ""2""}";
                 await dickinsonBrosSQLRunnerDBService.UpdateQueueItemAsync(queueItemObserved).ConfigureAwait(false);
 
-                Console.WriteLine("Flush Telemetry");
-                await telemetryService.FlushAsync().ConfigureAwait(false);
-
-                applicationLifetime.StopApplication();
+                Console.WriteLine("HostApplicationLifetime StopApplication");
+                hostApplicationLifetime.StopApplication();
             }
             catch (Exception e)
             {
@@ -129,43 +121,23 @@ namespace DickinsonBros.SQL.Runner
         }
 
 
-        private void ConfigureServices(IServiceCollection services, Services.ApplicationLifetime applicationLifetime)
+        private void ConfigureServices(IServiceCollection services)
         {
             services.AddOptions();
             services.AddLogging(cfg => cfg.AddConsole());
 
             //Add ApplicationLifetime
-            services.AddSingleton<IApplicationLifetime>(applicationLifetime);
+            services.AddSingleton<IHostApplicationLifetime, HostApplicationLifetime>();
 
-            //Add DateTime Service
+            //Add Services
             services.AddDateTimeService();
-
-            //Add Stopwatch Service
             services.AddStopwatchService();
-
-            //Add Logging Service
             services.AddLoggingService();
-
-            //Add Redactor Service
             services.AddRedactorService();
-            services.Configure<RedactorServiceOptions>(_configuration.GetSection(nameof(RedactorServiceOptions)));
-
-            //Add Certificate Encryption Service
-            services.AddCertificateEncryptionService<CertificateEncryptionServiceOptions>();
-            services.Configure<CertificateEncryptionServiceOptions<RunnerCertificateEncryptionServiceOptions>>(_configuration.GetSection(nameof(RunnerCertificateEncryptionServiceOptions)));
-
-            //Add Telemetry Service
+            services.AddConfigurationEncryptionService();
             services.AddTelemetryService();
-            services.AddSingleton<IConfigureOptions<TelemetryServiceOptions>, TelemetryServiceOptionsConfigurator>();
-
-            //Add SQLService
             services.AddSQLService();
-
-            //Add SQLService
             services.AddDataTableService();
-
-            //Add MemoryCatche
-            services.AddMemoryCache();
 
             //Add Runner SQL Database Service
             services.AddSingleton<IDickinsonBrosSQLRunnerDBService, DickinsonBrosSQLRunnerDBService>();

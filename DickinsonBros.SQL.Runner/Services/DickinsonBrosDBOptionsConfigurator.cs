@@ -19,12 +19,11 @@ namespace DickinsonBros.SQL.Runner.Services
             using var scope = _serviceScopeFactory.CreateScope();
             var provider = scope.ServiceProvider;
             var configuration = provider.GetRequiredService<IConfiguration>();
-            var certificateEncryptionService = provider.GetRequiredService<ICertificateEncryptionService<RunnerCertificateEncryptionServiceOptions>>();
-            var telemetryServiceOptions = configuration.GetSection(nameof(TelemetryServiceOptions)).Get<TelemetryServiceOptions>();
-            telemetryServiceOptions.ConnectionString = certificateEncryptionService.Decrypt(telemetryServiceOptions.ConnectionString);
+            var configurationEncryptionService = provider.GetRequiredService<IConfigurationEncryptionService>();
+            var telemetryServiceOptions = configuration.GetSection(nameof(TelemetryServiceOptions)).Get<TelemetryServiceOptions>(); 
             configuration.Bind($"{nameof(TelemetryServiceOptions)}", options);
 
-            options.ConnectionString = telemetryServiceOptions.ConnectionString;
+            options.ConnectionString = configurationEncryptionService.Decrypt(telemetryServiceOptions.ConnectionString);
         }
     }
 }
