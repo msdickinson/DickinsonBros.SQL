@@ -17,44 +17,44 @@ namespace DickinsonBros.SQL.Runner.Services.AccountDB
         internal readonly string _connectionString;
         internal readonly ISQLService _sqlService;
 
-        internal const string QUEUE_TABLE_NAME = "[DickinsonBros.SQL.Runner.Database].[TestRunner].[Queue]";
+        internal const string QUEUE_TABLE_NAME = "[DickinsonBros.SQL.Runner].[TestRunner].[Queue]";
 
-        internal const string MIXED_TABLE_NAME = "[DickinsonBros.SQL.Runner.Database].[TestRunner].[Mixed]";
+        internal const string MIXED_TABLE_NAME = "[DickinsonBros.SQL.Runner].[TestRunner].[Mixed]";
 
         internal const string SELECT_TOP_1_BY_QUEUEID_DESC = 
  @"SELECT TOP (1) 
     [QueueId],
     [Payload]
-FROM [DickinsonBros.SQL.Runner.Database].[TestRunner].[Queue]
+FROM [DickinsonBros.SQL.Runner].[TestRunner].[Queue]
 order by QueueId DESC;";
 
         internal const string SELECT_TOP_50_BY_QUEUEID_DESC =
 @"SELECT TOP (50) 
     [QueueId],
     [Payload]
-FROM [DickinsonBros.SQL.Runner.Database].[TestRunner].[Queue]
+FROM [DickinsonBros.SQL.Runner].[TestRunner].[Queue]
 order by QueueId DESC;";
 
 
         internal const string UPDATE_QUEUE_DATA_BY_QUEUEID_DESC =
-@"UPDATE [DickinsonBros.SQL.Runner.Database].[TestRunner].[Queue]
+@"UPDATE [DickinsonBros.SQL.Runner].[TestRunner].[Queue]
         SET [Payload] = @Payload
  WHERE QueueId = @QueueId";
 
         internal const string DELETE_ALL_QUEUE_ITEMS =
-@"DELETE FROM [DickinsonBros.SQL.Runner.Database].[TestRunner].[Queue];";
+@"DELETE FROM [DickinsonBros.SQL.Runner].[TestRunner].[Queue];";
 
         internal const string DELETE_ALL_MIXED_ITEMS =
-@"DELETE FROM [DickinsonBros.SQL.Runner.Database].[TestRunner].[Mixed];";
+@"DELETE FROM [DickinsonBros.SQL.Runner].[TestRunner].[Mixed];";
 
         internal const string INSERT_QUEUE_ITEM =
-@"INSERT INTO [DickinsonBros.SQL.Runner.Database].[TestRunner].[Queue]
+@"INSERT INTO [DickinsonBros.SQL.Runner].[TestRunner].[Queue]
         ([Payload])
     VALUES
         (@Payload);";
 
         internal const string INSERT_QUEUE_ITEMS =
-@"[DickinsonBros.SQL.Runner.Database].[TestRunner].InsertQueueItems ";
+@"[DickinsonBros.SQL.Runner].[TestRunner].InsertQueueItems ";
 
         internal const string SELECT_TOP_1_BY_QUEUEID_DESC_WITH_STORED_PROC = "[TestRunner].[SelectTopOneQueue]";
 
