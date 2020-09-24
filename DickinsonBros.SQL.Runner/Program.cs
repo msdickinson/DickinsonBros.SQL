@@ -129,32 +129,15 @@ namespace DickinsonBros.SQL.Runner
             //Add ApplicationLifetime
             services.AddSingleton<IHostApplicationLifetime, HostApplicationLifetime>();
 
-            //Add DateTime Service
+            //Add Services
             services.AddDateTimeService();
-
-            //Add Stopwatch Service
             services.AddStopwatchService();
-
-            //Add Logging Service
             services.AddLoggingService();
-
-            //Add Redactor Service
             services.AddRedactorService();
-
-            //Add Certificate Encryption Service
             services.AddConfigurationEncryptionService();
-
-            //Add Telemetry Service
             services.AddTelemetryService();
-
-            //Add SQLService
             services.AddSQLService();
-
-            //Add SQLService
             services.AddDataTableService();
-
-            //Add MemoryCatche
-            services.AddMemoryCache();
 
             //Add Runner SQL Database Service
             services.AddSingleton<IDickinsonBrosSQLRunnerDBService, DickinsonBrosSQLRunnerDBService>();

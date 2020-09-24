@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DickinsonBros.DataTable" Version="2.0.0" />
+    <PackageReference Include="DickinsonBros.DataTable" Version="2.0.1" />
     <PackageReference Include="DickinsonBros.DateTime" Version="3.0.0" />
     <PackageReference Include="DickinsonBros.Encryption.Certificate" Version="6.1.0" />
     <PackageReference Include="DickinsonBros.Logger" Version="3.0.0" />
