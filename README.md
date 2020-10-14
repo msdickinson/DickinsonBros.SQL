@@ -131,10 +131,7 @@ await telemetryService.FlushAsync().ConfigureAwait(false);
           commandType: Text
           ElapsedMilliseconds: 2
       
-Note: Logs can be redacted via configuration (see https://github.com/msdickinson/DickinsonBros.Redactor)
-
-Telemetry generated when using DickinsonBros.Telemetry and connecting it to a configured database for ITelemetry 
-See https://github.com/msdickinson/DickinsonBros.Telemetry on how to configure DickinsonBros.Telemetry and setup the database.
+Telemetry
 
 ![Alt text](https://raw.githubusercontent.com/msdickinson/DickinsonBros.SQL/develop/TelemetrySQLSample.PNG)
 
