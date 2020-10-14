@@ -23,8 +23,6 @@ namespace DickinsonBros.SQL.Tests.Extensions
             Assert.IsTrue(serviceCollection.Any(serviceDefinition => serviceDefinition.ServiceType == typeof(ISQLService) &&
                                            serviceDefinition.ImplementationType == typeof(SQLService) &&
                                            serviceDefinition.Lifetime == ServiceLifetime.Singleton));
-
-
         }
     }
 }
