@@ -10,9 +10,6 @@ Features
 
 <h2>Example Usage</h2>
 
-Note: Example below is based on Example Runner that contains a warper class on SQLService called DickinsonBrosSQLRunnerDBService. https://github.com/msdickinson/DickinsonBros.SQL/tree/develop/DickinsonBros.SQL.Runner
-
-
 ```C#
 var queueItem = new QueueDTO
 {
