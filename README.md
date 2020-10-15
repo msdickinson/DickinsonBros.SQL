@@ -131,7 +131,7 @@ await telemetryService.FlushAsync().ConfigureAwait(false);
           commandType: Text
           ElapsedMilliseconds: 2
       
-Telemetry
+<b>Telemetry</b>
 
 ![Alt text](https://raw.githubusercontent.com/msdickinson/DickinsonBros.SQL/develop/TelemetrySQLSample.PNG)
 
